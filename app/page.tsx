@@ -3,6 +3,9 @@ import { EmptyResultsPlaceholder } from "@/components/results/empty-results-plac
 import { RecentPromptsList } from "@/components/results/recent-prompts-list";
 import { getRecentPrompts } from "@/lib/data/get-recent-prompts";
 
+/** Server Actions on this page call slow LLM + web search APIs; raise platform limits (e.g. Vercel). */
+export const maxDuration = 300;
+
 export default async function HomePage() {
   const recent = await getRecentPrompts();
   const hasHistory = recent.length > 0;

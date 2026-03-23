@@ -16,6 +16,24 @@ export type RunPromptState =
   | { ok: true; promptId: string }
   | { ok: false; error: string };
 
+function formatActionError(e: unknown): string {
+  if (!(e instanceof Error)) {
+    return "Something went wrong.";
+  }
+  const m = e.message.trim();
+  if (!m) {
+    return "Something went wrong.";
+  }
+  // Undici/fetch when the server closes the connection (often route / serverless timeout).
+  if (m.toLowerCase() === "terminated") {
+    return "Request was cut off (usually a timeout). Analysis uses web search and can take 1–3 minutes. Try one model at a time, or confirm your host allows long server actions (this app sets maxDuration on the home page).";
+  }
+  if (/aborted|ECONNRESET|ETIMEDOUT|socket hang up/i.test(m)) {
+    return "Network or server connection ended before completion. Try again, or run a single model to shorten the run.";
+  }
+  return m;
+}
+
 function resolveModels(formData: FormData): ModelKind[] {
   const runAll = formData.get("runAll") === "on";
   if (runAll) {
@@ -112,7 +130,6 @@ export async function runPromptAction(
 
     return { ok: true, promptId };
   } catch (e) {
-    const message = e instanceof Error ? e.message : "Something went wrong.";
-    return { ok: false, error: message };
+    return { ok: false, error: formatActionError(e) };
   }
 }
