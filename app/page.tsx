@@ -1,13 +1,51 @@
 import { PromptForm } from "@/components/prompt-form";
+import { PromptLibrary } from "@/components/prompt-library";
 import { EmptyResultsPlaceholder } from "@/components/results/empty-results-placeholder";
 import { RecentPromptsList } from "@/components/results/recent-prompts-list";
+import type { PromptPrefill } from "@/lib/data/get-prompt-prefill";
+import { getPromptPrefill } from "@/lib/data/get-prompt-prefill";
+import { getPromptTemplate } from "@/lib/data/get-prompt-template";
+import { getPromptTemplates } from "@/lib/data/get-templates";
 import { getRecentPrompts } from "@/lib/data/get-recent-prompts";
 
 /** Server Actions on this page call slow LLM + web search APIs; raise platform limits (e.g. Vercel). */
 export const maxDuration = 300;
 
-export default async function HomePage() {
+type SearchParams = Promise<{
+  rerunFrom?: string;
+  template?: string;
+}>;
+
+function templateToPrefill(t: NonNullable<Awaited<ReturnType<typeof getPromptTemplate>>>): PromptPrefill {
+  return {
+    promptText: t.prompt_text,
+    targetBrand: t.target_brand,
+    competitors: t.competitors.join(", "),
+    seriesId: "",
+    brandAliasesJson: "{}",
+  };
+}
+
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const sp = await searchParams;
+  const prefill = sp.rerunFrom
+    ? await getPromptPrefill(sp.rerunFrom)
+    : null;
+  const templateRow = sp.template
+    ? await getPromptTemplate(sp.template)
+    : null;
+
+  const initial: PromptPrefill | null =
+    prefill ?? (templateRow ? templateToPrefill(templateRow) : null);
+
+  const formKey = sp.rerunFrom ?? sp.template ?? "new";
+
   const recent = await getRecentPrompts();
+  const templates = await getPromptTemplates();
   const hasHistory = recent.length > 0;
 
   return (
@@ -20,12 +58,14 @@ export default async function HomePage() {
           Prompt Master
         </h1>
         <p className="max-w-2xl text-lg text-muted-foreground">
-          Test prompts across OpenAI and Gemini, measure brand visibility, and
-          capture how models position your brand versus competitors.
+          Test prompts across OpenAI and Gemini with grounded web search, measure
+          brand visibility, and track how answers change over time in a series.
         </p>
       </header>
 
-      <PromptForm />
+      <PromptLibrary templates={templates} />
+
+      <PromptForm key={formKey} initial={initial} />
 
       <section className="space-y-4">
         <h2 className="text-lg font-semibold tracking-tight">

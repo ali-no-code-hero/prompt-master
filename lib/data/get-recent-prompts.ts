@@ -4,6 +4,7 @@ export type RecentPromptRow = {
   id: string;
   prompt_text: string;
   target_brand: string;
+  series_id: string;
   created_at: string;
   runs: {
     id: string;
@@ -24,6 +25,7 @@ export async function getRecentPrompts(): Promise<RecentPromptRow[]> {
       id,
       prompt_text,
       target_brand,
+      series_id,
       created_at,
       ai_runs ( id, model_name, created_at )
     `,
@@ -40,6 +42,7 @@ export async function getRecentPrompts(): Promise<RecentPromptRow[]> {
       id: string;
       prompt_text: string;
       target_brand: string;
+      series_id: string;
       created_at: string;
       ai_runs:
         | { id: string; model_name: string; created_at: string }[]
@@ -53,6 +56,7 @@ export async function getRecentPrompts(): Promise<RecentPromptRow[]> {
       id: r.id,
       prompt_text: r.prompt_text,
       target_brand: r.target_brand,
+      series_id: r.series_id,
       created_at: r.created_at,
       runs,
     };

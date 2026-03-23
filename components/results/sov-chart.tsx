@@ -88,49 +88,6 @@ export function SovChart({ mentions }: Props) {
           </PieChart>
         </ResponsiveContainer>
       </div>
-
-      <div className="rounded-xl border border-border/80 bg-muted/15 px-3 py-3">
-        <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          Mention breakdown
-        </p>
-        <ul className="space-y-2">
-          {breakdown.map((m) => {
-            const fill = colorByBrand.get(m.brand_name) ?? COLORS[0];
-            const label = m.is_target ? "Your brand" : "Competitor";
-            return (
-              <li
-                key={m.brand_name}
-                className="flex items-start justify-between gap-3 text-sm"
-              >
-                <span className="flex min-w-0 items-start gap-2">
-                  <span
-                    className="mt-1.5 size-2 shrink-0 rounded-full"
-                    style={{ backgroundColor: fill }}
-                    aria-hidden
-                  />
-                  <span className="min-w-0">
-                    <span className="block font-medium leading-tight">
-                      {m.brand_name}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {label}
-                    </span>
-                  </span>
-                </span>
-                <span className="shrink-0 tabular-nums text-right">
-                  <span className="block font-medium">
-                    {m.mention_count}{" "}
-                    {m.mention_count === 1 ? "mention" : "mentions"}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {m.share_pct}% share
-                  </span>
-                </span>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
     </div>
   );
 }

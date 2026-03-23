@@ -10,7 +10,12 @@ import { runOpenAIPrimary } from "@/lib/ai/openai";
 export async function runPrimaryModel(
   kind: ModelKind,
   promptText: string,
-): Promise<{ modelLabel: string; fullResponse: string; apiModelName: string }> {
+): Promise<{
+  modelLabel: string;
+  fullResponse: string;
+  apiModelName: string;
+  usedWebSearch: boolean;
+}> {
   if (kind === "openai") {
     const fullResponse = await runOpenAIPrimary(promptText);
     const apiModelName =
@@ -19,6 +24,7 @@ export async function runPrimaryModel(
       modelLabel: `${MODEL_LABELS.openai} (${apiModelName})`,
       fullResponse,
       apiModelName,
+      usedWebSearch: true,
     };
   }
 
@@ -29,5 +35,6 @@ export async function runPrimaryModel(
     modelLabel: `${MODEL_LABELS.gemini} (${apiModelName})`,
     fullResponse,
     apiModelName,
+    usedWebSearch: true,
   };
 }

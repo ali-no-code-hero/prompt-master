@@ -32,6 +32,40 @@ export function alignMentionsToBrands(
   });
 }
 
+/**
+ * Maps alternate spellings to canonical brand labels (as entered by the user).
+ * Keys are canonical names; values are aliases to merge into that canonical.
+ */
+export function rollUpMentionCountsByAliases(
+  extracted: { brand_name: string; count: number; is_target: boolean }[],
+  targetBrand: string,
+  aliases: Record<string, string[]>,
+): { brand_name: string; count: number; is_target: boolean }[] {
+  if (!aliases || Object.keys(aliases).length === 0) {
+    return extracted;
+  }
+
+  const toCanonical = new Map<string, string>();
+  for (const [canonical, alts] of Object.entries(aliases)) {
+    toCanonical.set(norm(canonical), canonical);
+    for (const a of alts) {
+      toCanonical.set(norm(a), canonical);
+    }
+  }
+
+  const aggregated = new Map<string, number>();
+  for (const row of extracted) {
+    const canonical = toCanonical.get(norm(row.brand_name)) ?? row.brand_name;
+    aggregated.set(canonical, (aggregated.get(canonical) ?? 0) + row.count);
+  }
+
+  return Array.from(aggregated.entries()).map(([brand_name, count]) => ({
+    brand_name,
+    count,
+    is_target: norm(brand_name) === norm(targetBrand),
+  }));
+}
+
 export function sovPercentages(mentions: MentionRow[]): {
   brand_name: string;
   mention_count: number;

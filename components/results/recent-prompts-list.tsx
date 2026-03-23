@@ -35,39 +35,46 @@ export function RecentPromptsList({ prompts }: Props) {
     <ul className="space-y-3">
       {prompts.map((p) => (
         <li key={p.id}>
-          <Link href={`/results/${p.id}`} className="group block">
-            <Card className="border-border/80 bg-card/40 transition-colors hover:bg-card/60">
-              <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
-                <div className="min-w-0 flex-1 space-y-1">
-                  <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                    <p className="font-semibold text-foreground">{p.target_brand}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {formatWhen(p.created_at)}
-                    </p>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    {truncate(p.prompt_text, 160)}
+          <Card className="border-border/80 bg-card/40 transition-colors hover:bg-card/60">
+            <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+              <div className="min-w-0 flex-1 space-y-1">
+                <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                  <p className="font-semibold text-foreground">{p.target_brand}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {formatWhen(p.created_at)}
                   </p>
-                  {p.runs.length > 0 ? (
-                    <p className="text-xs text-muted-foreground">
-                      Models:{" "}
-                      {p.runs.map((r) => r.model_name).join(", ")}
-                    </p>
-                  ) : null}
                 </div>
-                <span
-                  className={cn(
-                    buttonVariants({ variant: "ghost", size: "sm" }),
-                    "shrink-0 self-end sm:self-center",
-                    "inline-flex gap-1 text-muted-foreground group-hover:text-foreground",
-                  )}
-                >
-                  View
-                  <ChevronRight className="size-4" aria-hidden />
-                </span>
-              </CardContent>
-            </Card>
-          </Link>
+                <p className="text-sm text-muted-foreground">
+                  {truncate(p.prompt_text, 160)}
+                </p>
+                {p.runs.length > 0 ? (
+                  <p className="text-xs text-muted-foreground">
+                    Models:{" "}
+                    {p.runs.map((r) => r.model_name).join(", ")}
+                  </p>
+                ) : null}
+                <p className="text-xs">
+                  <Link
+                    href={`/series/${p.series_id}`}
+                    className="text-primary underline-offset-4 hover:underline"
+                  >
+                    Series timeline
+                  </Link>
+                </p>
+              </div>
+              <Link
+                href={`/results/${p.id}`}
+                className={cn(
+                  buttonVariants({ variant: "ghost", size: "sm" }),
+                  "shrink-0 self-end sm:self-center",
+                  "inline-flex gap-1 text-muted-foreground hover:text-foreground",
+                )}
+              >
+                View
+                <ChevronRight className="size-4" aria-hidden />
+              </Link>
+            </CardContent>
+          </Card>
         </li>
       ))}
     </ul>

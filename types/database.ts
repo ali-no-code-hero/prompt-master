@@ -15,6 +15,9 @@ export interface Database {
           prompt_text: string;
           target_brand: string;
           competitors: string[];
+          series_id: string;
+          brand_aliases: Json;
+          user_id: string | null;
           created_at: string;
         };
         Insert: {
@@ -22,6 +25,9 @@ export interface Database {
           prompt_text: string;
           target_brand: string;
           competitors?: string[];
+          series_id?: string;
+          brand_aliases?: Json;
+          user_id?: string | null;
           created_at?: string;
         };
         Update: {
@@ -29,6 +35,9 @@ export interface Database {
           prompt_text?: string;
           target_brand?: string;
           competitors?: string[];
+          series_id?: string;
+          brand_aliases?: Json;
+          user_id?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -38,6 +47,10 @@ export interface Database {
           id: string;
           prompt_id: string;
           model_name: string;
+          provider: string | null;
+          api_model: string | null;
+          used_web_search: boolean | null;
+          metadata: Json | null;
           full_response: string;
           summary: string | null;
           sentiment: string | null;
@@ -48,6 +61,10 @@ export interface Database {
           id?: string;
           prompt_id: string;
           model_name: string;
+          provider?: string | null;
+          api_model?: string | null;
+          used_web_search?: boolean | null;
+          metadata?: Json | null;
           full_response: string;
           summary?: string | null;
           sentiment?: string | null;
@@ -58,6 +75,10 @@ export interface Database {
           id?: string;
           prompt_id?: string;
           model_name?: string;
+          provider?: string | null;
+          api_model?: string | null;
+          used_web_search?: boolean | null;
+          metadata?: Json | null;
           full_response?: string;
           summary?: string | null;
           sentiment?: string | null;
@@ -113,6 +134,8 @@ export interface Database {
           url: string;
           category: string;
           note: string | null;
+          http_status: number | null;
+          checked_at: string | null;
         };
         Insert: {
           id?: string;
@@ -120,6 +143,8 @@ export interface Database {
           url: string;
           category: string;
           note?: string | null;
+          http_status?: number | null;
+          checked_at?: string | null;
         };
         Update: {
           id?: string;
@@ -127,6 +152,8 @@ export interface Database {
           url?: string;
           category?: string;
           note?: string | null;
+          http_status?: number | null;
+          checked_at?: string | null;
         };
         Relationships: [
           {
@@ -134,6 +161,109 @@ export interface Database {
             columns: ["run_id"];
             isOneToOne: false;
             referencedRelation: "ai_runs";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      prompt_templates: {
+        Row: {
+          id: string;
+          user_id: string | null;
+          title: string;
+          intent: string;
+          prompt_text: string;
+          target_brand: string;
+          competitors: string[];
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id?: string | null;
+          title: string;
+          intent: string;
+          prompt_text: string;
+          target_brand: string;
+          competitors?: string[];
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string | null;
+          title?: string;
+          intent?: string;
+          prompt_text?: string;
+          target_brand?: string;
+          competitors?: string[];
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      share_tokens: {
+        Row: {
+          id: string;
+          prompt_id: string;
+          token_hash: string;
+          expires_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          prompt_id: string;
+          token_hash: string;
+          expires_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          prompt_id?: string;
+          token_hash?: string;
+          expires_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "share_tokens_prompt_id_fkey";
+            columns: ["prompt_id"];
+            isOneToOne: false;
+            referencedRelation: "prompts";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      analysis_jobs: {
+        Row: {
+          id: string;
+          status: string;
+          error: string | null;
+          result_prompt_id: string | null;
+          payload: Json;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          status: string;
+          error?: string | null;
+          result_prompt_id?: string | null;
+          payload?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          status?: string;
+          error?: string | null;
+          result_prompt_id?: string | null;
+          payload?: Json;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "analysis_jobs_result_prompt_id_fkey";
+            columns: ["result_prompt_id"];
+            isOneToOne: false;
+            referencedRelation: "prompts";
             referencedColumns: ["id"];
           },
         ];

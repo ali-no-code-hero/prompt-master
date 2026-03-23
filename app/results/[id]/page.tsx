@@ -7,6 +7,9 @@ import { cn } from "@/lib/utils";
 import { ResultsDashboard } from "@/components/results/results-dashboard";
 import { getPromptResults } from "@/lib/data/get-prompt-results";
 
+/** Retry / partial runs can call slow model APIs from this tree. */
+export const maxDuration = 300;
+
 type Props = {
   params: Promise<{ id: string }>;
 };
