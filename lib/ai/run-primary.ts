@@ -20,7 +20,7 @@ export async function runPrimaryModel(
 
   const fullResponse = await runGeminiPrimary(promptText);
   const apiModelName =
-    process.env.GEMINI_PRIMARY_MODEL ?? "gemini-2.0-flash";
+    process.env.GEMINI_PRIMARY_MODEL ?? "gemini-2.5-flash";
   return {
     modelLabel: `${MODEL_LABELS.gemini} (${apiModelName})`,
     fullResponse,
