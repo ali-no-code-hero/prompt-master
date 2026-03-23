@@ -45,6 +45,7 @@ export async function runOpenAIPrimary(promptText: string): Promise<string> {
     body,
     searchUrls,
     "Sources (OpenAI web search)",
+    "Page returned by OpenAI web search for this reply; use with inline [n] citations in the Direct answer where applicable.",
   );
 }
 

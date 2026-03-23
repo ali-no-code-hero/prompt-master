@@ -1,3 +1,4 @@
+import { alignMentionsToBrands } from "@/lib/ai/sov";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { Tables } from "@/types/database";
 
@@ -22,7 +23,7 @@ export type PromptResults = {
       mention_count: number;
       is_target: boolean;
     }[];
-    sources: { url: string; category: string }[];
+    sources: { url: string; category: string; note: string | null }[];
   }[];
 };
 
@@ -55,7 +56,7 @@ export async function getPromptResults(
       recommendation_context,
       created_at,
       brand_mentions ( brand_name, mention_count, is_target ),
-      sources ( url, category )
+      sources ( url, category, note )
     `,
     )
     .eq("prompt_id", promptId)
@@ -79,7 +80,7 @@ export async function getPromptResults(
         mention_count: number;
         is_target: boolean;
       }[] | null;
-      sources: { url: string; category: string }[] | null;
+      sources: { url: string; category: string; note: string | null }[] | null;
     };
     return {
       id: r.id,
@@ -89,7 +90,15 @@ export async function getPromptResults(
       sentiment: r.sentiment,
       recommendation_context: r.recommendation_context,
       created_at: r.created_at,
-      brand_mentions: r.brand_mentions ?? [],
+      brand_mentions: alignMentionsToBrands(
+        p.target_brand,
+        p.competitors,
+        (r.brand_mentions ?? []).map((m) => ({
+          brand_name: m.brand_name,
+          count: m.mention_count,
+          is_target: m.is_target,
+        })),
+      ),
       sources: r.sources ?? [],
     };
   });

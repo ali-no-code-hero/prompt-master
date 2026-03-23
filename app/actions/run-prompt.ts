@@ -99,6 +99,7 @@ export async function runPromptAction(
         const sources = extracted.sources.map((s) => ({
           url: s.url.trim(),
           category: normalizeSourceCategory(s.category),
+          note: s.note?.trim() ? s.note.trim() : null,
         }));
 
         return {

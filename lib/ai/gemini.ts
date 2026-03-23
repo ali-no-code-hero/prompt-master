@@ -6,6 +6,7 @@ import { PRIMARY_SYSTEM_INSTRUCTIONS } from "@/lib/ai/primary-system";
 import {
   appendMissingSourceUrls,
   collectGeminiGroundingUrls,
+  resolveGeminiGroundingUrls,
 } from "@/lib/ai/web-source-attachments";
 
 export function getGeminiClient(): GoogleGenerativeAI {
@@ -39,10 +40,12 @@ export async function runGeminiPrimary(promptText: string): Promise<string> {
 
   const grounding =
     result.response.candidates?.[0]?.groundingMetadata;
-  const groundingUrls = collectGeminiGroundingUrls(grounding);
+  const rawGroundingUrls = collectGeminiGroundingUrls(grounding);
+  const groundingUrls = await resolveGeminiGroundingUrls(rawGroundingUrls);
   return appendMissingSourceUrls(
     text,
     groundingUrls,
     "Sources (Google Search grounding)",
+    "Page retrieved via Google Search grounding for this reply; tie to claims the model cited.",
   );
 }

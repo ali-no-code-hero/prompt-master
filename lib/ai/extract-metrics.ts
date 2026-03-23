@@ -12,6 +12,8 @@ const EXTRACTION_SYSTEM = `You are an AEO/GEO analyst. Given the user's original
 - Classify recommendation_context from how the target brand is positioned in the answer.
 - Sentiment should describe the target brand only (e.g. positive, neutral, negative, mixed).
 - Extract every https:// or http:// URL from the answer (including inside markdown links like [label](url)). Deduplicate by URL.
+- For each URL, set category to the best label: Owned Domain, Forum/Reddit, News/Media, Review Site, or Other.
+- For each URL, set note to a short sentence: what claim, bullet, or section of the answer that URL is meant to support. Use the model's "Supports:" text from its References section when present; otherwise infer from context. If the URL is only generic background, say so.
 - If no URLs, return an empty sources array.`;
 
 function buildUserContent(input: {
@@ -67,7 +69,7 @@ async function extractWithGemini(
     },
   });
 
-  const prompt = `${EXTRACTION_SYSTEM}\n\n${buildUserContent(input)}\n\nRespond with JSON only matching the schema with keys: summary, sentiment, recommendation_context, mention_counts, sources.`;
+  const prompt = `${EXTRACTION_SYSTEM}\n\n${buildUserContent(input)}\n\nRespond with JSON only matching the schema with keys: summary, sentiment, recommendation_context, mention_counts, sources. Each item in sources may include url, category, and optional note.`;
 
   const result = await model.generateContent(prompt);
   const text = result.response.text();

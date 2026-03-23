@@ -13,7 +13,7 @@ export type RunPayload = {
     mention_count: number;
     is_target: boolean;
   }[];
-  sources: { url: string; category: string }[];
+  sources: { url: string; category: string; note: string | null }[];
 };
 
 export async function insertPromptAndRuns(
@@ -81,6 +81,7 @@ export async function insertPromptAndRuns(
           run_id: runId,
           url: s.url,
           category: s.category,
+          note: s.note,
         })),
       );
       if (sErr) {

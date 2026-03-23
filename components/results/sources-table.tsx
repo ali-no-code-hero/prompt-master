@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 
-type Source = { url: string; category: string };
+type Source = { url: string; category: string; note: string | null };
 
 type Props = {
   sources: Source[];
@@ -18,7 +18,7 @@ export function SourcesTable({ sources }: Props) {
   if (sources.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
-        No URLs or sources detected in the response.
+        No URLs or cited sources detected in the response.
       </p>
     );
   }
@@ -29,13 +29,14 @@ export function SourcesTable({ sources }: Props) {
         <TableHeader>
           <TableRow>
             <TableHead>URL</TableHead>
-            <TableHead className="w-[160px]">Category</TableHead>
+            <TableHead className="w-[140px]">Category</TableHead>
+            <TableHead className="min-w-[200px]">Supports / provenance</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {sources.map((s) => (
-            <TableRow key={`${s.url}-${s.category}`}>
-              <TableCell className="max-w-[420px] truncate font-mono text-xs">
+            <TableRow key={`${s.url}-${s.category}-${s.note ?? ""}`}>
+              <TableCell className="max-w-[380px] truncate font-mono text-xs">
                 <a
                   href={s.url}
                   target="_blank"
@@ -49,6 +50,9 @@ export function SourcesTable({ sources }: Props) {
                 <Badge variant="secondary" className="font-normal">
                   {s.category}
                 </Badge>
+              </TableCell>
+              <TableCell className="max-w-[480px] text-sm text-muted-foreground">
+                {s.note?.trim() ? s.note : "—"}
               </TableCell>
             </TableRow>
           ))}

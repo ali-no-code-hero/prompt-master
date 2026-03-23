@@ -45,7 +45,7 @@ function RunColumn({
       </div>
       <div>
         <h4 className="mb-3 text-sm font-medium text-muted-foreground">
-          Sources cited
+          Sources & provenance
         </h4>
         <SourcesTable sources={run.sources} />
       </div>

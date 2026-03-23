@@ -112,18 +112,21 @@ export interface Database {
           run_id: string;
           url: string;
           category: string;
+          note: string | null;
         };
         Insert: {
           id?: string;
           run_id: string;
           url: string;
           category: string;
+          note?: string | null;
         };
         Update: {
           id?: string;
           run_id?: string;
           url?: string;
           category?: string;
+          note?: string | null;
         };
         Relationships: [
           {
