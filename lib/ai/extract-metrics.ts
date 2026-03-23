@@ -69,7 +69,7 @@ async function extractWithGemini(
     },
   });
 
-  const prompt = `${EXTRACTION_SYSTEM}\n\n${buildUserContent(input)}\n\nRespond with JSON only matching the schema with keys: summary, sentiment, recommendation_context, mention_counts, sources. Each item in sources may include url, category, and optional note.`;
+  const prompt = `${EXTRACTION_SYSTEM}\n\n${buildUserContent(input)}\n\nRespond with JSON only matching the schema with keys: summary, sentiment, recommendation_context, mention_counts, sources. Each item in sources must include url, category, and note (string or null).`;
 
   const result = await model.generateContent(prompt);
   const text = result.response.text();

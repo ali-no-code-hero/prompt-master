@@ -34,8 +34,8 @@ export const extractionSchema = z.object({
     z.object({
       url: z.string(),
       category: z.string(),
-      /** What claim or section of the answer this URL supports (from References or inferred). */
-      note: z.string().optional(),
+      /** What claim or section of the answer this URL supports (from References or inferred). Use null when not applicable. */
+      note: z.string().nullable(),
     }),
   ),
 });
