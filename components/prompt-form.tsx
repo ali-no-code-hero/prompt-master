@@ -121,10 +121,9 @@ export function PromptForm({ initial }: Props) {
             Run prompt analysis
           </CardTitle>
           <CardDescription>
-            OpenAI and Gemini with web search / grounding. Narrow, comparable
-            surfaces—add Claude or Perplexity later via{" "}
-            <code className="rounded bg-muted px-1 text-xs">lib/ai</code>{" "}
-            adapters.
+            OpenAI, Google Gemini, and Perplexity Sonar (live web + citations).
+            Optional: extend <code className="rounded bg-muted px-1 text-xs">lib/ai</code>{" "}
+            for more providers.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -227,7 +226,7 @@ export function PromptForm({ initial }: Props) {
                   />
                   <span className="text-sm font-medium">Run on all models</span>
                 </label>
-                <div className="grid gap-2 sm:grid-cols-2">
+                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                   <label className="flex cursor-pointer items-center gap-3">
                     <input
                       type="checkbox"
@@ -243,6 +242,14 @@ export function PromptForm({ initial }: Props) {
                       className="size-4 rounded border border-input accent-primary"
                     />
                     <span className="text-sm">Google Gemini</span>
+                  </label>
+                  <label className="flex cursor-pointer items-center gap-3">
+                    <input
+                      type="checkbox"
+                      name="perplexity"
+                      className="size-4 rounded border border-input accent-primary"
+                    />
+                    <span className="text-sm">Perplexity Sonar</span>
                   </label>
                 </div>
               </div>

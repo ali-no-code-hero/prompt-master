@@ -58,8 +58,9 @@ export default async function HomePage({
           Prompt Master
         </h1>
         <p className="max-w-2xl text-lg text-muted-foreground">
-          Test prompts across OpenAI and Gemini with grounded web search, measure
-          brand visibility, and track how answers change over time in a series.
+          Test prompts across OpenAI, Gemini, and Perplexity Sonar with web-grounded
+          answers, measure brand visibility, and track how answers change over time
+          in a series.
         </p>
       </header>
 

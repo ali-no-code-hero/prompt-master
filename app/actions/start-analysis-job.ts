@@ -3,7 +3,7 @@
 import { after } from "next/server";
 
 import { runPromptPipeline } from "@/lib/analysis/run-prompt-pipeline";
-import type { ModelKind } from "@/lib/ai/constants";
+import { MODEL_KINDS, type ModelKind } from "@/lib/ai/constants";
 import { parseCompetitorsList } from "@/lib/parse-competitors";
 import { getOptionalUserId } from "@/lib/supabase/get-user";
 import { createSupabaseServiceRoleClient } from "@/lib/supabase/admin";
@@ -27,7 +27,7 @@ type JobPayload = {
 function resolveModels(formData: FormData): ModelKind[] {
   const runAll = formData.get("runAll") === "on";
   if (runAll) {
-    return ["openai", "gemini"];
+    return [...MODEL_KINDS];
   }
   const models: ModelKind[] = [];
   if (formData.get("openai") === "on") {
@@ -35,6 +35,9 @@ function resolveModels(formData: FormData): ModelKind[] {
   }
   if (formData.get("gemini") === "on") {
     models.push("gemini");
+  }
+  if (formData.get("perplexity") === "on") {
+    models.push("perplexity");
   }
   return models;
 }

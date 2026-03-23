@@ -11,6 +11,7 @@ import {
   YAxis,
 } from "recharts";
 
+import { MODEL_LABELS, type ModelKind } from "@/lib/ai/constants";
 import { sovPercentages } from "@/lib/ai/sov";
 
 import type { PromptResults } from "@/lib/data/get-prompt-results";
@@ -59,6 +60,7 @@ export function SovGroupedBarChart({ runs }: Props) {
   const colors: Record<string, string> = {
     openai: "var(--chart-1)",
     gemini: "var(--chart-2)",
+    perplexity: "var(--chart-3)",
   };
 
   return (
@@ -95,7 +97,11 @@ export function SovGroupedBarChart({ runs }: Props) {
             <Bar
               key={p}
               dataKey={p}
-              name={p === "openai" ? "OpenAI" : "Gemini"}
+              name={
+                p in MODEL_LABELS
+                  ? MODEL_LABELS[p as ModelKind]
+                  : p
+              }
               fill={colors[p] ?? "var(--chart-3)"}
               radius={[4, 4, 0, 0]}
             />

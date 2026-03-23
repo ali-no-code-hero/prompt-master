@@ -5,7 +5,7 @@ import { HelpTip } from "@/components/ui/help-tip";
 import { Separator } from "@/components/ui/separator";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
-import type { ModelKind } from "@/lib/ai/constants";
+import { MODEL_KINDS, type ModelKind } from "@/lib/ai/constants";
 
 import { BrandAliasesForm } from "@/components/results/brand-aliases-form";
 import { SaveTemplateForm } from "@/components/save-template-form";
@@ -148,7 +148,7 @@ export function ResultsDashboard({ data, readOnly = false }: Props) {
   const providersPresent = new Set(
     data.runs.map((r) => r.provider).filter(Boolean) as string[],
   );
-  const allKinds: ModelKind[] = ["openai", "gemini"];
+  const allKinds: ModelKind[] = [...MODEL_KINDS];
   const missingModels = allKinds.filter((k) => !providersPresent.has(k));
   const aliasesJson = JSON.stringify(data.prompt.brand_aliases ?? {}, null, 2);
 

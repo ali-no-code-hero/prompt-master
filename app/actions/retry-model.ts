@@ -1,7 +1,7 @@
 "use server";
 
 import { executeModelRun } from "@/lib/analysis/execute-model-run";
-import type { ModelKind } from "@/lib/ai/constants";
+import { MODEL_KINDS, type ModelKind } from "@/lib/ai/constants";
 import { appendRunToPrompt } from "@/lib/db/persist-run";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
@@ -21,14 +21,15 @@ export async function retryModelForPromptAction(
   formData: FormData,
 ): Promise<RetryModelState> {
   const promptId = String(formData.get("promptId") ?? "").trim();
-  const kind = String(formData.get("modelKind") ?? "").trim() as ModelKind;
+  const rawKind = String(formData.get("modelKind") ?? "").trim();
 
   if (!promptId) {
     return { ok: false, error: "Missing prompt." };
   }
-  if (kind !== "openai" && kind !== "gemini") {
+  if (!MODEL_KINDS.includes(rawKind as ModelKind)) {
     return { ok: false, error: "Invalid model." };
   }
+  const kind = rawKind as ModelKind;
 
   try {
     const supabase = await createSupabaseServerClient();

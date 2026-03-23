@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import type { ModelKind } from "@/lib/ai/constants";
-import { MODEL_LABELS } from "@/lib/ai/constants";
+import { MODEL_KINDS, MODEL_LABELS, type ModelKind } from "@/lib/ai/constants";
 
 type Props = {
   promptId: string;
@@ -32,7 +31,8 @@ export function PartialFailureBanner({ promptId }: Props) {
                 typeof x === "object" &&
                 "kind" in x &&
                 "error" in x &&
-                (x.kind === "openai" || x.kind === "gemini") &&
+                typeof (x as { kind: string }).kind === "string" &&
+                MODEL_KINDS.includes((x as { kind: ModelKind }).kind) &&
                 typeof (x as { error: string }).error === "string",
             ),
           );
