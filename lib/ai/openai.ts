@@ -4,6 +4,11 @@ import {
   DEFAULT_EXTRACTION_MODEL,
   DEFAULT_OPENAI_PRIMARY_MODEL,
 } from "@/lib/ai/constants";
+import { PRIMARY_SYSTEM_INSTRUCTIONS } from "@/lib/ai/primary-system";
+import {
+  appendMissingSourceUrls,
+  collectOpenAIWebSearchUrls,
+} from "@/lib/ai/web-source-attachments";
 
 export function getOpenAIClient(): OpenAI {
   const key = process.env.OPENAI_API_KEY;
@@ -16,15 +21,31 @@ export function getOpenAIClient(): OpenAI {
 export async function runOpenAIPrimary(promptText: string): Promise<string> {
   const openai = getOpenAIClient();
   const model = process.env.OPENAI_PRIMARY_MODEL ?? DEFAULT_OPENAI_PRIMARY_MODEL;
-  const completion = await openai.chat.completions.create({
+  const response = await openai.responses.create({
     model,
-    messages: [{ role: "user", content: promptText }],
+    instructions: PRIMARY_SYSTEM_INSTRUCTIONS,
+    input: promptText,
+    tools: [{ type: "web_search" }],
+    include: ["web_search_call.action.sources"],
   });
-  const text = completion.choices[0]?.message?.content;
-  if (!text) {
+
+  if (response.error) {
+    throw new Error(
+      response.error.message ?? "OpenAI returned an error on the response",
+    );
+  }
+
+  const body = response.output_text?.trim();
+  if (!body) {
     throw new Error("OpenAI returned an empty response");
   }
-  return text;
+
+  const searchUrls = collectOpenAIWebSearchUrls(response.output);
+  return appendMissingSourceUrls(
+    body,
+    searchUrls,
+    "Sources (OpenAI web search)",
+  );
 }
 
 export function getExtractionModelName(): string {

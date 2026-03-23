@@ -12,6 +12,13 @@ type Props = {
   data: PromptResults;
 };
 
+function formatRunAt(iso: string): string {
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(iso));
+}
+
 function RunColumn({
   run,
 }: {
@@ -22,6 +29,9 @@ function RunColumn({
       <div>
         <h3 className="text-sm font-medium text-muted-foreground">Model</h3>
         <p className="text-base font-semibold tracking-tight">{run.model_name}</p>
+        <p className="mt-0.5 text-xs text-muted-foreground">
+          {formatRunAt(run.created_at)}
+        </p>
       </div>
       <MetricsCards
         sentiment={run.sentiment}

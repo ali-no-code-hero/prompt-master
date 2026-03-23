@@ -1,7 +1,12 @@
 import { PromptForm } from "@/components/prompt-form";
 import { EmptyResultsPlaceholder } from "@/components/results/empty-results-placeholder";
+import { RecentPromptsList } from "@/components/results/recent-prompts-list";
+import { getRecentPrompts } from "@/lib/data/get-recent-prompts";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const recent = await getRecentPrompts();
+  const hasHistory = recent.length > 0;
+
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-12 px-4 py-12 sm:px-6">
       <header className="space-y-3">
@@ -20,8 +25,14 @@ export default function HomePage() {
       <PromptForm />
 
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold tracking-tight">Results</h2>
-        <EmptyResultsPlaceholder />
+        <h2 className="text-lg font-semibold tracking-tight">
+          {hasHistory ? "Recent analyses" : "Results"}
+        </h2>
+        {hasHistory ? (
+          <RecentPromptsList prompts={recent} />
+        ) : (
+          <EmptyResultsPlaceholder />
+        )}
       </section>
     </div>
   );

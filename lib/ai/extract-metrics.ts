@@ -11,7 +11,7 @@ const EXTRACTION_SYSTEM = `You are an AEO/GEO analyst. Given the user's original
 - Count brand mentions in the answer (case-insensitive whole-word style matches are fine).
 - Classify recommendation_context from how the target brand is positioned in the answer.
 - Sentiment should describe the target brand only (e.g. positive, neutral, negative, mixed).
-- Extract URLs appearing in the answer and categorize each source.
+- Extract every https:// or http:// URL from the answer (including inside markdown links like [label](url)). Deduplicate by URL.
 - If no URLs, return an empty sources array.`;
 
 function buildUserContent(input: {
